@@ -120,3 +120,5 @@ var loading = function(isLoading) {
 };
 
 /* << END DEMO JS (from https://stripe.com/docs/payments/card-element?lang=node) */
+
+console.log("Hello from GitHub Pages.")
