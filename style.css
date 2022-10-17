@@ -1,6 +1,5 @@
 /* << START DEMO CSS (from https://stripe.com/docs/payments/card-element?lang=node) */
 /* Variables */
-
 * {
     box-sizing: border-box;
 }
@@ -184,3 +183,23 @@ button:disabled {
 }
 
 /* >> END DEMO CSS (from https://stripe.com/docs/payments/card-element?lang=node) */
+
+
+body {
+    flex-direction: column;
+}
+
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+#customer-details {
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+#payment-form {
+    width: unset;
+}

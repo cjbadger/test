@@ -10,7 +10,7 @@ var stripe = Stripe("pk_test_L1f0e3XAzjsG7jtp4uN7L9ql");
 // };
 
 // // Disable the button until we have Stripe set up on the page
-// document.querySelector("button").disabled = true;
+document.querySelector("button").disabled = true;
 // fetch("/create-payment-intent", {
 //   method: "POST",
 //   headers: {
@@ -121,4 +121,19 @@ var loading = function(isLoading) {
 
 /* << END DEMO JS (from https://stripe.com/docs/payments/card-element?lang=node) */
 
-console.log("Hello from GitHub Pages.")
+console.log("Hello from GitHub Pages.");
+const customerDetails = document.querySelector("#customer-details");
+window.addEventListener("message", (e) => {
+    const data = e.data;
+    if (data.action == "barhead-data") {
+        console.log(data);
+        for (let prop in data) {
+            if (Object.hasOwn(data, prop) && (prop !== "action")) {
+                let element = document.createElement("p");
+                element.innerText = `${prop}: ${data[prop]}`;
+                customerDetails.appendChild(element);
+            }
+        }
+        console.log(e);
+    }
+});
