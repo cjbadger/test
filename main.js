@@ -23,7 +23,7 @@ document.querySelector("button").disabled = true;
 //   })
 //   .then(function(data) {
 var elements = stripe.elements();
-var style = {
+var defaultStripeConfig = {
     base: {
         color: "#32325d",
         fontFamily: 'Arial, sans-serif',
@@ -40,84 +40,91 @@ var style = {
     }
 };
 
-var card = elements.create("card", { style: style });
-// Stripe injects an iframe into the DOM
-card.mount("#card-element");
 
-card.on("change", function (event) {
-    // Disable the Pay button if there are no card details in the Element
-    document.querySelector("button").disabled = event.empty;
-    document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
-});
 
-var form = document.getElementById("payment-form");
-form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    // Complete payment when the submit button is clicked
-    payWithCard(stripe, card, data.clientSecret);
-});
-//   });
+const initializeStripe = (style = defaultStripeConfig) => {
+    console.log("Initializing stripe component");
+    console.log(style);
+    var card = elements.create("card", { style: style });
+    // Stripe injects an iframe into the DOM
+    card.mount("#card-element");
 
-// Calls stripe.confirmCardPayment
-// If the card requires authentication Stripe shows a pop-up modal to
-// prompt the user to enter authentication details without leaving your page.
-var payWithCard = function(stripe, card, clientSecret) {
-  loading(true);
-  stripe
-    .confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: card
-      }
-    })
-    .then(function(result) {
-      if (result.error) {
-        // Show error to your customer
-        showError(result.error.message);
-      } else {
-        // The payment succeeded!
-        orderComplete(result.paymentIntent.id);
-      }
+    card.on("change", function (event) {
+        // Disable the Pay button if there are no card details in the Element
+        document.querySelector("button").disabled = event.empty;
+        document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
     });
-};
 
-/* ------- UI helpers ------- */
+    var form = document.getElementById("payment-form");
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        // Complete payment when the submit button is clicked
+        payWithCard(stripe, card, data.clientSecret);
+    });
+    //   });
 
-// Shows a success message when the payment is complete
-var orderComplete = function(paymentIntentId) {
-  loading(false);
-  document
-    .querySelector(".result-message a")
-    .setAttribute(
-      "href",
-      "https://dashboard.stripe.com/test/payments/" + paymentIntentId
-    );
-  document.querySelector(".result-message").classList.remove("hidden");
-  document.querySelector("button").disabled = true;
-};
+    // Calls stripe.confirmCardPayment
+    // If the card requires authentication Stripe shows a pop-up modal to
+    // prompt the user to enter authentication details without leaving your page.
+    var payWithCard = function (stripe, card, clientSecret) {
+        loading(true);
+        stripe
+            .confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: card
+                }
+            })
+            .then(function (result) {
+                if (result.error) {
+                    // Show error to your customer
+                    showError(result.error.message);
+                } else {
+                    // The payment succeeded!
+                    orderComplete(result.paymentIntent.id);
+                }
+            });
+    };
 
-// Show the customer the error from Stripe if their card fails to charge
-var showError = function(errorMsgText) {
-  loading(false);
-  var errorMsg = document.querySelector("#card-error");
-  errorMsg.textContent = errorMsgText;
-  setTimeout(function() {
-    errorMsg.textContent = "";
-  }, 4000);
-};
+    /* ------- UI helpers ------- */
 
-// Show a spinner on payment submission
-var loading = function(isLoading) {
-  if (isLoading) {
-    // Disable the button and show a spinner
-    document.querySelector("button").disabled = true;
-    document.querySelector("#spinner").classList.remove("hidden");
-    document.querySelector("#button-text").classList.add("hidden");
-  } else {
-    document.querySelector("button").disabled = false;
-    document.querySelector("#spinner").classList.add("hidden");
-    document.querySelector("#button-text").classList.remove("hidden");
-  }
-};
+    // Shows a success message when the payment is complete
+    var orderComplete = function (paymentIntentId) {
+        loading(false);
+        document
+            .querySelector(".result-message a")
+            .setAttribute(
+                "href",
+                "https://dashboard.stripe.com/test/payments/" + paymentIntentId
+            );
+        document.querySelector(".result-message").classList.remove("hidden");
+        document.querySelector("button").disabled = true;
+    };
+
+    // Show the customer the error from Stripe if their card fails to charge
+    var showError = function (errorMsgText) {
+        loading(false);
+        var errorMsg = document.querySelector("#card-error");
+        errorMsg.textContent = errorMsgText;
+        setTimeout(function () {
+            errorMsg.textContent = "";
+        }, 4000);
+    };
+
+    // Show a spinner on payment submission
+    var loading = function (isLoading) {
+        if (isLoading) {
+            // Disable the button and show a spinner
+            document.querySelector("button").disabled = true;
+            document.querySelector("#spinner").classList.remove("hidden");
+            document.querySelector("#button-text").classList.add("hidden");
+        } else {
+            document.querySelector("button").disabled = false;
+            document.querySelector("#spinner").classList.add("hidden");
+            document.querySelector("#button-text").classList.remove("hidden");
+        }
+    };
+}
+
 
 /* << END DEMO JS (from https://stripe.com/docs/payments/card-element?lang=node) */
 
@@ -125,6 +132,10 @@ console.log("Hello from GitHub Pages.");
 const customerDetails = document.querySelector("#customer-details");
 window.addEventListener("message", (e) => {
     const data = e.data;
+    if (e.origin !== "https://cdpn.io") {
+        return; // Ignore any messages that aren't from the expected origin. 
+    }
+
     if (data.action == "barhead-data") {
         console.log(data);
         for (let prop in data) {
@@ -136,4 +147,11 @@ window.addEventListener("message", (e) => {
         }
         console.log(e);
     }
+
+    if (data.action == "barhead-stripe-configuration") {
+        const stripeConfig = e.data.stripeConfig;
+        initializeStripe(stripeConfig);
+    }
 });
+
+
