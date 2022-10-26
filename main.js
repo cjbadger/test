@@ -125,6 +125,7 @@ console.log("Hello from GitHub Pages.");
 const customerDetails = document.querySelector("#customer-details");
 window.addEventListener("message", (e) => {
     const data = e.data;
+    const messageOrigin = e.origin;
     if (data.action == "barhead-data") {
         console.log(data);
         for (let prop in data) {
