@@ -133,10 +133,14 @@ const customerDetails = document.querySelector("#customer-details");
 window.addEventListener("message", (e) => {
     console.log("postMessage received.")
     const data = e.data;
-    if (e.origin !== "https://cdpn.io") {
+    const messageOrigin = e.origin;
+    console.log(e.messageOrigin);
+    if (messageOrigin !== "https://cdpn.io") {
+        console.log("Origin does not match expected origin.")
         return; // Ignore any messages that aren't from the expected origin. 
     }
 
+    console.log("Origin matches expected origin.");
     if (data.action === "barhead-data") {
         console.log(data);
         for (let prop in data) {
@@ -152,6 +156,7 @@ window.addEventListener("message", (e) => {
         const stripeConfig = e.data.stripeConfig;
         initializeStripe(stripeConfig);
     }
+
 });
 
 
