@@ -131,12 +131,13 @@ const initializeStripe = (style = defaultStripeConfig) => {
 console.log("Hello from GitHub Pages.");
 const customerDetails = document.querySelector("#customer-details");
 window.addEventListener("message", (e) => {
+    console.log("postMessage received.")
     const data = e.data;
     if (e.origin !== "https://cdpn.io") {
         return; // Ignore any messages that aren't from the expected origin. 
     }
 
-    if (data.action == "barhead-data") {
+    if (data.action === "barhead-data") {
         console.log(data);
         for (let prop in data) {
             if (Object.hasOwn(data, prop) && (prop !== "action")) {
@@ -146,9 +147,8 @@ window.addEventListener("message", (e) => {
             }
         }
         console.log(e);
-    }
-
-    if (data.action == "barhead-stripe-configuration") {
+    } else if (data.action === "barhead-stripe-configuration") {
+        console.log("Configuring Stripe...")
         const stripeConfig = e.data.stripeConfig;
         initializeStripe(stripeConfig);
     }
