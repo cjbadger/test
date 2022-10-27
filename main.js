@@ -136,7 +136,7 @@ window.addEventListener("message", (e) => {
     const data = e.data;
     const messageOrigin = e.origin;
     console.log(messageOrigin);
-    if ((messageOrigin !== "https://cdpn.io") || (messageOrigin !== "https://js.stripe.com")) {
+    if ((messageOrigin !== "https://cdpn.io") && (messageOrigin !== "https://js.stripe.com")) {
         console.log("Message origin does not match expected origins.")
         return; // Ignore any messages that aren't from the expected origins. 
     }
