@@ -131,17 +131,18 @@ const initializeStripe = (style = defaultStripeConfig) => {
 console.log("Hello from GitHub Pages.");
 const customerDetails = document.querySelector("#customer-details");
 window.addEventListener("message", (e) => {
+    debugger
     console.log("postMessage received.");
     console.log(e);
     const data = e.data;
     const messageOrigin = e.origin;
     console.log(e.messageOrigin);
-    if (messageOrigin !== "https://cdpn.io") {
-        console.log("!! Origin DOES NOT match expected origin.")
-        return; // Ignore any messages that aren't from the expected origin. 
-    }
+    // if (messageOrigin !== "https://cdpn.io") {
+    //     console.log("!! Origin DOES NOT match expected origin.")
+    //     return; // Ignore any messages that aren't from the expected origin. 
+    // }
 
-    console.log(">> Origin matches expected origin.");
+    // console.log(">> Origin matches expected origin.");
     if (data.action === "barhead-data") {
         console.log(data);
         for (let prop in data) {
