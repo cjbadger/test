@@ -131,18 +131,16 @@ const initializeStripe = (style = defaultStripeConfig) => {
 console.log("Hello from GitHub Pages.");
 const customerDetails = document.querySelector("#customer-details");
 window.addEventListener("message", (e) => {
-    debugger
-    console.log("postMessage received.");
+    console.log("Message received via postMessage.");
     console.log(e);
     const data = e.data;
     const messageOrigin = e.origin;
-    console.log(e.messageOrigin);
-    // if (messageOrigin !== "https://cdpn.io") {
-    //     console.log("!! Origin DOES NOT match expected origin.")
-    //     return; // Ignore any messages that aren't from the expected origin. 
-    // }
+    console.log(messageOrigin);
+    if ((messageOrigin !== "https://cdpn.io") || (messageOrigin !== "https://js.stripe.com")) {
+        console.log("Message origin does not match expected origins.")
+        return; // Ignore any messages that aren't from the expected origins. 
+    }
 
-    // console.log(">> Origin matches expected origin.");
     if (data.action === "barhead-data") {
         console.log(data);
         for (let prop in data) {
@@ -152,15 +150,11 @@ window.addEventListener("message", (e) => {
                 customerDetails.appendChild(element);
             }
         }
-        console.log(e);
     } else if (data.action === "barhead-stripe-configuration") {
         console.log("Configuring Stripe...")
         const stripeConfig = e.data.stripeConfig;
         initializeStripe(stripeConfig);
-    } else {
-        console.log("Action provided does not match any known action.")
-    }
-
+    } 
 });
 
 
