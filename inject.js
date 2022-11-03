@@ -1,1 +1,3 @@
-console.log("Hi from inject.js");
+document.addEventListener("DOMContentLoaded", (event) => {
+    console.log("Hi from inject.js");
+});
